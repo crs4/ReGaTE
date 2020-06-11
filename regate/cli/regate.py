@@ -37,19 +37,34 @@ from regate.cli.helpers import (
 
 # init root logger
 logger = logging.getLogger()
-formatter = logging.Formatter('%(asctime)s :: %(levelname)s :: %(message)s')
 
-# first logger
-file_handler = RotatingFileHandler('../activity.log', 'a', 1000000, 1)
-file_handler.setLevel(logging.DEBUG)
-file_handler.setFormatter(formatter)
-logger.addHandler(file_handler)
 
-# second logger
-file_handler_edam = RotatingFileHandler('../edam_mapping.log', 'a', 1000000, 1)
-file_handler_edam.setLevel(logging.WARNING)
-file_handler_edam.setFormatter(formatter)
-logger.addHandler(file_handler_edam)
+def configure_logging(opts):
+    formatter = logging.Formatter('%(asctime)s :: %(levelname)s :: %(message)s')
+
+    logger.setLevel(logging.DEBUG if opts.debug else logging.INFO)
+
+    # Append logger to the console
+    stream_handler = logging.StreamHandler()
+    stream_handler.setFormatter(formatter)
+    if opts.debug:
+        stream_handler.setLevel(logging.DEBUG)
+    logger.addHandler(stream_handler)
+
+    if opts.save_logs:
+        log_dir = opts.save_logs
+        logger.info("Saving logs to directory %s", log_dir)
+        # first logger
+        file_handler = RotatingFileHandler(os.path.join(log_dir, 'activity.log'), 'a', 1000000, 1)
+        file_handler.setLevel(logging.DEBUG)
+        file_handler.setFormatter(formatter)
+        logger.addHandler(file_handler)
+
+        # second logger
+        file_handler_edam = RotatingFileHandler(os.path.join(log_dir, 'edam_mapping.log'), 'a', 1000000, 1)
+        file_handler_edam.setLevel(logging.WARNING)
+        file_handler_edam.setFormatter(formatter)
+        logger.addHandler(file_handler_edam)
 
 
 def template(args):
@@ -637,13 +652,7 @@ def run():
     logging.getLogger("requests").setLevel(logging.ERROR)
     parser = build_cli_parser()
     args = parser.parse_args()
-    # Append logger to the console if debug mode is enabled
-    if args.debug:
-        stream_handler = logging.StreamHandler()
-        stream_handler.setFormatter(formatter)
-        logger.addHandler(stream_handler)
-    # configure log level
-    logger.setLevel(logging.DEBUG if args.debug else logging.INFO)
+    configure_logging(args)
     logger.debug("CLI options: %s", args)
     try:
         if "command" in args:

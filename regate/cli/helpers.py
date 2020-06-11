@@ -1,5 +1,8 @@
-import sys
+
 import argparse
+import sys
+
+from os.path import expanduser
 from pygments.token import Token
 from PyInquirer import prompt as _prompt
 from prompt_toolkit.styles import style_from_dict
@@ -120,11 +123,13 @@ def build_cli_parser():
     parser = argparse.ArgumentParser(description="Bridging Tool for Galaxy and Biotools Registry",
                                      formatter_class=lambda prog: argparse.HelpFormatter(prog, width=140, max_help_position=100))
     parser.add_argument("--debug", action="store_true", help="Enable DEBUG level")
-    parser.add_argument("-q, --no-interactive", dest="no_interactive",
+    parser.add_argument("-q", "--no-interactive", dest="no_interactive",
                         action="store_true", default=False, help="Disable interactive mode")
     parser.add_argument("--config_file",
                         help="configuration file for regate or remag",
                         default="regate.ini")
+    parser.add_argument("--save-logs", nargs='?', metavar="DIR", const=expanduser("~"), default=None,
+                        help="Specify whether to log to files. Optionally specify a directory where to store log files.")
 
     sp = parser.add_subparsers(title='available commands')
 
