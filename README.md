@@ -4,7 +4,7 @@
 ReGaTE
 ==================
 
-ReGaTE is a command line utility that automates the registration of tools and workflows installed on any given Galaxy portal in ELIXIR bio.tools and viceversa.
+ReGaTE is a command line utility that supports the registration of tools and workflows installed on any given Galaxy portal in ELIXIR bio.tools and viceversa.
 
 
 
@@ -18,6 +18,10 @@ pip install .
 
 2) type `regate template` to generate your `regate.ini` configuration file and fill it with your Galaxy and bio.tools platform settings. In particular, you need  (e.g., `galaxy_url_api`, `api_key`, `bioregistry_host`, etc.)
 
+
+You can also opt to use the docker image:  `docker pull crs4/regate`.  Take care
+to mount appropriate directories to access the configuration file and store
+metadata.
 
 
 ## Getting started
@@ -35,8 +39,6 @@ A wizard will guide you through the main steps of the ReGaTE use:
 * which type of resource to export: `tools`, `workflows`, `all`;
 * which resources to export.
 
-
-
 As a result of the *export* process, all the exported resources will be placed into the configurable output folder `regate_tools` and registered on the target platform. 
 
 ```[language=bash]
@@ -49,7 +51,7 @@ As a result of the *export* process, all the exported resources will be placed i
  |   |—— tools/
  |   |—— workflows/
 ```
-*Layout of the`regate_tools` folder. It is firstly organised by platform (i.e., `galaxy`,`biotools`) and then by resource type (i.e., `tool`, `workflow`)*
+*Layout of the`regate_tools` folder. It is first organised by platform (i.e., `galaxy`,`biotools`) and then by resource type (i.e., `tool`, `workflow`)*
 
 
 
@@ -91,6 +93,11 @@ regate --no-interactive export
        --from galaxy [--push] [tools|workflows|all] [--filter id1,...,idN]
 ```
 
+When publishing a workflow from Galaxy on bio.tools, ReGaTE will serialize the
+workflow and store it on bio.tools as a DataURI along with the available
+metadata.  When importing a workflow from  bio.tools into Galaxy the inverse
+operation takes place:  the serialized workflow is downloaded from bio.tools and
+imported into Galaxy through its API.
 
 ##### Examples
 
