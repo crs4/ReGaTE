@@ -14,7 +14,9 @@ jobs:
   build_and_push:
     runs-on: "ubuntu-latest"
     steps:
-      - name: Build and push Docker images
+      - name: Checkout
+        uses: actions/checkout@v1
+      - name: Build and push Docker image
         uses: docker/build-push-action@v1.1.0
         with:
           username: "${{ secrets.DOCKER_USERNAME }}"
