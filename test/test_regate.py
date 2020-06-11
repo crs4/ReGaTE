@@ -6,7 +6,10 @@ import json
 from nose_parameterized import parameterized
 import ruamel.yaml
 
-from regate.regate import map_tool, Config, build_edam_dict
+from regate.config import Config
+from regate.edam import build_edam_dict
+from regate.mapping import map_tool
+
 
 def get_yml_list():
     tests = []
